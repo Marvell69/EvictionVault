@@ -20,7 +20,7 @@ contract VaultTest is Test {
         vault = new EvictionVault(owners, 2);
     }
 
-    
+    // test deposit
     function testDeposit() public {
         vm.deal(user, 1 ether);
 
@@ -31,7 +31,7 @@ contract VaultTest is Test {
         assertEq(vault.totalVaultValue(), 1 ether);
     }
 
-    
+    // test withdrawal
     function testWithdraw() public {
         vm.deal(user, 1 ether);
 
@@ -48,7 +48,7 @@ contract VaultTest is Test {
         assertEq(vault.totalVaultValue(), 0);
     }
 
-    
+    // test pauseUnpause owner
     function testPauseUnpauseOwner() public {
         vm.prank(owner1);
         vault.pause();
@@ -57,26 +57,26 @@ contract VaultTest is Test {
         vm.prank(owner1);
         vault.unpause();
         assertFalse(vault.paused());
-    }
+        }
 
     
-    function testPauseRejectNonOwner() public {
+      function testPauseRejectNonOwner() public {
         vm.prank(user);
         vm.expectRevert("not owner");
         vault.pause();
-    }
+     }
 
-    
-    function testEmergencyWithdrawOnlyOwner() public {
+    // test emergency withdrawal
+      function testEmergencyWithdrawOnlyOwner() public {
         vm.deal(address(vault), 5 ether);
 
         vm.prank(user);
         vm.expectRevert("not owner");
         vault.emergencyWithdrawAll();
-    }
+      }
 
     
-    function testSetMerkleRootOnlyOwner() public {
+        function testSetMerkleRootOnlyOwner() public {
         bytes32 newRoot = keccak256(abi.encodePacked("test"));
 
         vm.prank(user);
@@ -86,7 +86,7 @@ contract VaultTest is Test {
         vm.prank(owner1);
         vault.setMerkleRoot(newRoot);
         assertEq(vault.merkleRoot(), newRoot);
-    }
+     }
 
         function testReceiveMsgSender() public {
         vm.deal(user, 1 ether);
@@ -96,7 +96,7 @@ contract VaultTest is Test {
         require(success);
 
         assertEq(vault.balances(user), 1 ether);
-    }
+        }
 
         function testMultiSigTransaction() public {
         address target = address(4);
