@@ -43,9 +43,6 @@ The tests cover deposits, withdrawals, pause logic, owner-only functions, merkle
 - 8/8 tests pass.
 - All listed vulnerabilities are patched.
 
-## Notes
-
-- This is Phase 1; further work could include formal verification, event indexing, upgradeability, and governance support.
 
 ## License
 
