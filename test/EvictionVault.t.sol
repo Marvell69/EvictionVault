@@ -20,7 +20,7 @@ contract VaultTest is Test {
         vault = new EvictionVault(owners, 2);
     }
 
-    // Test 1: Basic deposit functionality
+    
     function testDeposit() public {
         vm.deal(user, 1 ether);
 
@@ -31,7 +31,7 @@ contract VaultTest is Test {
         assertEq(vault.totalVaultValue(), 1 ether);
     }
 
-    // Test 2: Withdrawal with correct amount transfer
+    
     function testWithdraw() public {
         vm.deal(user, 1 ether);
 
@@ -48,7 +48,7 @@ contract VaultTest is Test {
         assertEq(vault.totalVaultValue(), 0);
     }
 
-    // Test 3: Pause/Unpause restricted to owners
+    
     function testPauseUnpauseOwner() public {
         vm.prank(owner1);
         vault.pause();
@@ -59,14 +59,14 @@ contract VaultTest is Test {
         assertFalse(vault.paused());
     }
 
-    // Test 4: Non-owner cannot pause
+    
     function testPauseRejectNonOwner() public {
         vm.prank(user);
         vm.expectRevert("not owner");
         vault.pause();
     }
 
-    // Test 5: Emergency withdraw only callable by owner
+    
     function testEmergencyWithdrawOnlyOwner() public {
         vm.deal(address(vault), 5 ether);
 
@@ -75,7 +75,7 @@ contract VaultTest is Test {
         vault.emergencyWithdrawAll();
     }
 
-    // Test 6: Proper merkleRoot setting with owner restriction
+    
     function testSetMerkleRootOnlyOwner() public {
         bytes32 newRoot = keccak256(abi.encodePacked("test"));
 
@@ -88,8 +88,7 @@ contract VaultTest is Test {
         assertEq(vault.merkleRoot(), newRoot);
     }
 
-    // Test 7: Receive function uses msg.sender not tx.origin
-    function testReceiveMsgSender() public {
+        function testReceiveMsgSender() public {
         vm.deal(user, 1 ether);
 
         vm.prank(user);
@@ -99,32 +98,31 @@ contract VaultTest is Test {
         assertEq(vault.balances(user), 1 ether);
     }
 
-    // Test 8: Multi-sig transaction flow with timelock
-    function testMultiSigTransaction() public {
+        function testMultiSigTransaction() public {
         address target = address(4);
         vm.deal(address(vault), 2 ether);
 
-        // Owner1 submits
+       
         vm.prank(owner1);
         vault.submitTransaction(target, 1 ether, "");
 
-        // Owner2 confirms to reach threshold
+        
         vm.prank(owner2);
         vault.confirmTransaction(0);
 
-        // Check timelock enforced
+        
         vm.prank(owner1);
         vm.expectRevert("timelock not expired");
         vault.executeTransaction(0);
 
-        // Warp past timelock
+       
         vm.warp(block.timestamp + 1 hours + 1);
 
-        // Execute after timelock
+       
         vm.prank(owner1);
         vault.executeTransaction(0);
 
-        // Verify transaction was executed
+        
         (, , , bool executed, , , ) = vault.transactions(0);
         assertTrue(executed);
     }
