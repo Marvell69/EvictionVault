@@ -25,7 +25,7 @@ contract EvictionVault is VaultModifiers {
     }
 
     receive() external payable {
-        balances[msg.sender] += msg.value; // FIX: no tx.origin
+        balances[msg.sender] += msg.value; 
         totalVaultValue += msg.value;
         emit Deposit(msg.sender, msg.value);
     }
@@ -43,13 +43,13 @@ contract EvictionVault is VaultModifiers {
         balances[msg.sender] -= amount;
         totalVaultValue -= amount;
 
-        (bool success,) = payable(msg.sender).call{value: amount}(""); // FIX transfer
+        (bool success,) = payable(msg.sender).call{value: amount}(""); 
         require(success);
 
         emit Withdrawal(msg.sender, amount);
     }
 
-    function setMerkleRoot(bytes32 root) external onlyOwner { // FIX access control
+    function setMerkleRoot(bytes32 root) external onlyOwner { 
         merkleRoot = root;
         emit MerkleRootSet(root);
     }
@@ -64,7 +64,7 @@ contract EvictionVault is VaultModifiers {
 
         claimed[msg.sender] = true;
 
-        (bool success,) = payable(msg.sender).call{value: amount}(""); // FIX transfer
+        (bool success,) = payable(msg.sender).call{value: amount}(""); 
         require(success);
 
         totalVaultValue -= amount;
@@ -80,7 +80,7 @@ contract EvictionVault is VaultModifiers {
         paused = false;
     }
 
-    function emergencyWithdrawAll() external onlyOwner { // FIX public drain
+    function emergencyWithdrawAll() external onlyOwner { 
 
         uint256 bal = address(this).balance;
 
